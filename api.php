@@ -31,13 +31,26 @@ switch ($method) {
     echo json_encode(['id' => $pdo->lastInsertId()]);
     break;
   case 'PUT':
-    echo "Update items";
+    if (!$id || empty($input['name'])) {
+      http_response_code(400);
+      echo json_encode(['error' => 'ID and name is required']);
+    }
+    $stmt = $pdo->prepare("UPDATE items SET name = ?, description = ? WHERE id = ?");
+    $updated = $stmt->execute([$input['name'], $input['description'] ?? null, $id]);
+    echo json_encode(['updated' => $updated]);
     break;
   case 'DELETE':
-    echo "DELTE itens";
+    if (!$id) {
+      http_response_code(400);
+      echo json_encode(['error' => 'ID is required']);
+    }
+    $stmt = $pdo->prepare("DELETE FROM items where id = ?");
+    $deleted = $stmt->execute([$id]);
+    echo json_encode(['error' => $deleted]);
     break;
   default:
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405);
+    json_encode(['error' => 'Method Not Allowed']);
     break;
 }
 ?>
