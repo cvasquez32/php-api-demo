@@ -1,6 +1,6 @@
 # Simple PHP/MYSQL CRUD API
 
-A minimal RESTful API in PHP (7/8) using PDO and MYSQL.
+A minimal RESTful API built using **Vanilla PHP** and a lightweight **MVC like structure**. This is a test project to demonstrate basic modular design using controllers, models, and a single entry point.
 
 - PHP 7.0+
 - MySQL
