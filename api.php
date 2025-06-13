@@ -13,7 +13,12 @@ switch ($method) {
       $stmt = $pdo->prepare("SELECT * FROM items WHERE id = ?");
       $stmt->execute([$id]);
       $item = $stmt->fetch();
-      echo $item ? json_encode($item) : json_encode([]);
+      if ($item) {
+        echo json_encode($item);
+      } else {
+        http_response_code(400);
+        echo json_encode(['error' => "Iten with ID $id not found"]);
+      }
     } else {
       $stmt = $pdo->query("SELECT * FROM items ORDER BY created_at DESC");
       echo json_encode($stmt->fetchAll());
