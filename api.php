@@ -5,6 +5,7 @@ require 'config.php';
 $method = $_SERVER['REQUEST_METHOD'];
 $path = isset($_GET['id']) ? '/item' : '/items';
 $id = $_GET['id'] ?? null;
+$input = json_decode(file_get_contents('php://input'), true);
 
 switch ($method) {
   case 'GET':
@@ -19,7 +20,15 @@ switch ($method) {
     }
     break;
   case 'POST':
-    echo "Post item";
+    if (empty($input['name'])) {
+      http_response_code(400);
+      echo json_encode(['error' => 'Name is required']);
+      break;
+    }
+    $stmt = $pdo->prepare("INSERT INTO items (name, description) VALUES (?, ?)");
+    $stmt->execute([$input['name'], $input['description'] ?? null]);
+    http_response_code(201);
+    echo json_encode(['id' => $pdo->lastInsertId()]);
     break;
   case 'PUT':
     echo "Update items";
